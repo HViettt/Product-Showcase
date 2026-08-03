@@ -158,10 +158,15 @@ export function ProductDetailPage() {
               {/* Thông tin chính */}
               <div className="flex flex-col justify-between space-y-6">
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-accent">
-                      {product.brand}
-                    </span>
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-accent">
+                        {product.brand}
+                      </span>
+                      <span className="rounded font-mono text-[10px] font-bold px-2 py-0.5 border border-border-main bg-bg-main text-text-primary uppercase tracking-wider">
+                        Màu sắc: {product.color}
+                      </span>
+                    </div>
                     
                     {/* Monospace Spec Badge style for Category */}
                     <span className="rounded font-mono text-[10px] font-bold px-2 py-0.5 border border-border-main bg-bg-main text-text-primary uppercase tracking-wider">

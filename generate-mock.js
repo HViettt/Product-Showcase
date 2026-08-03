@@ -285,6 +285,16 @@ function generateSpecifications(category, brand, model) {
 // DATA GENERATION ENGINE
 // ==========================================
 
+const CATEGORY_COLORS = {
+  Laptop: '4f46e5',      // Indigo
+  Smartphone: '0891b2',  // Cyan
+  Tablet: '059669',      // Emerald
+  Smartwatch: 'd97706',  // Amber
+  Headphone: '7c3aed',   // Violet/Purple
+  Camera: '2563eb',      // Blue
+  Accessory: '475569'    // Slate
+};
+
 function generateDataset() {
   const products = [];
   const productDetails = {};
@@ -323,11 +333,12 @@ function generateDataset() {
     const color = getRandomItem(COLOR_PALETTE);
     const tags = getRandomSubarray(TAGS_POOL, getRandomInt(2, 4));
 
-    const primaryImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(template.model)}&size=800&background=random&bold=true&format=png`;
+    const bgHex = CATEGORY_COLORS[template.category] || '4f46e5';
+    const primaryImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(template.model)}&size=800&background=${bgHex}&color=ffffff&bold=true&format=png`;
     const galleryImages = [
       primaryImage,
-      `https://ui-avatars.com/api/?name=${encodeURIComponent(template.model + ' Side')}&size=800&background=random&bold=true&format=png`,
-      `https://ui-avatars.com/api/?name=${encodeURIComponent(template.model + ' Back')}&size=800&background=random&bold=true&format=png`
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(template.model + ' Side')}&size=800&background=${bgHex}&color=ffffff&bold=true&format=png`,
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(template.model + ' Back')}&size=800&background=${bgHex}&color=ffffff&bold=true&format=png`
     ];
 
     const description = `${template.model} chính hãng thương hiệu ${template.brand}. Thiết kế hiện đại, hiệu năng mạnh mẽ hàng đầu phân khúc năm ${template.year}.`;

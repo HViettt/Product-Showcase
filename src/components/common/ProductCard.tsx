@@ -110,8 +110,8 @@ function ProductCardComponent({ product, onViewDetail }: ProductCardProps) {
           {product.description}
         </p>
 
-        {/* Tags (tối đa 1 tag) */}
-        <div className="flex flex-wrap gap-1 mb-3.5">
+        {/* Tags (tối đa 1 tag) & Màu sắc */}
+        <div className="flex flex-wrap gap-1.5 mb-3.5">
           {product.tags.slice(0, 1).map((tag) => (
             <span
               key={tag}
@@ -120,6 +120,9 @@ function ProductCardComponent({ product, onViewDetail }: ProductCardProps) {
               #{tag}
             </span>
           ))}
+          <span className="rounded bg-bg-main border border-border-main px-2 py-0.5 text-[9px] font-mono font-bold text-text-secondary uppercase">
+            Màu: {product.color}
+          </span>
         </div>
       </div>
 

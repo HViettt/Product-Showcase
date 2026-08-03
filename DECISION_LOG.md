@@ -55,6 +55,17 @@
 - Kết quả AI trả về: AI đề xuất format general `cd <path-to-project>` và dạng lệnh `bash`/PowerShell song song.
 - Đánh giá của tôi: AI đúng. 
 
+## [2026-08-04 05:10] Hiển thị thuộc tính màu sắc và chuẩn hóa ảnh placeholder
+- Tình huống: Thuộc tính `color` dùng để lọc sản phẩm nhưng chưa được hiển thị trên UI. Ngoài ra, tham số `background=random` trong URL ảnh placeholder (UI-Avatars) ngẫu nhiên không tương xứng trực quan giữa các sản phẩm cùng loại.
+- Các phương án đã cân nhắc:
+  1. Chỉ ghi chú ảnh là placeholder ngẫu nhiên mà không sửa UI/mock data.
+  2. Bổ sung hiển thị `color` vào `ProductCard` (thành 1 tag phụ cạnh tag chính) và `ProductDetailPage` (cạnh brand/category); đồng thời chuẩn hóa ảnh placeholder bằng cách gán màu nền tĩnh (background hex) theo từng `category` sản phẩm (ví dụ Laptop dùng màu Indigo, Smartphone dùng màu Cyan) để tăng tính nhất quán trực quan.
+- Quyết định: Chọn phương án 2.
+- Kết quả:
+  - Cập nhật `ProductCard.tsx` hiển thị tag `Màu: {color}` cạnh tag gốc.
+  - Cập nhật `ProductDetailPage.tsx` hiển thị badge `Màu sắc: {color}` cạnh brand.
+  - Sửa `generate-mock.js` gán màu nền ảnh tĩnh theo category sản phẩm, chạy tạo lại dữ liệu, đồng bộ sang Mockoon thành công.
+
 ## Tổng kết
 - Review ban đầu và sửa blocker thực sự đã hoàn tất.
 - Dockerfile, docker-compose, README, APPROACH, DECISION_LOG đều đã được hoàn thiện theo yêu cầu.
