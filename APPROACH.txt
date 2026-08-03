@@ -1,0 +1,12 @@
+Approach
+
+- Kiểm tra toàn bộ source code trước khi sửa, chỉ giữ lại những phần đang đúng với business requirement.
+- Dùng React + TypeScript + Vite + React Router DOM cho màn hình Login, Product List, Product Detail.
+- Dùng Axios để kết nối API và localStorage để lưu token.
+- Dùng Mockoon để thiết kế mock API theo đúng endpoint /api/login, /api/logout, /api/product, /api/product/:id.
+- Dùng Docker để chạy frontend và mock-api trong cùng one-command setup.
+
+Lý do lựa chọn:
+- React + TypeScript phù hợp với yêu cầu UI và type-safe.
+- Mockoon giúp mock API nhanh, rõ ràng và khớp đúng requirement.
+- Docker giúp project dễ chạy trên môi trường khác nhau.

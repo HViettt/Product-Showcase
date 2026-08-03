@@ -1,0 +1,16 @@
+services:
+  mock-api:
+    image: mockoon/cli:latest
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./mockoon-data.json:/data/mockoon-data.json:ro
+    command: ["-d", "/data/mockoon-data.json", "-p", "3001"]
+
+  frontend:
+    build:
+      context: .
+    ports:
+      - "8080:80"
+    depends_on:
+      - mock-api
