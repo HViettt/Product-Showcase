@@ -1,9 +1,8 @@
 import { useMemo, useState, type ReactNode } from "react";
 import type { AuthUser, LoginResponse } from "../types/product";
 import { authService } from "../services/auth.service";
+import { AUTH_STORAGE_KEY } from "../services/apiClient";
 import { AuthContext } from "./AuthContext";
-
-const AUTH_STORAGE_KEY = "product-showcase-auth";
 
 const getInitialAuthState = () => {
   try {
