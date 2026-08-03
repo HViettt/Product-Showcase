@@ -1,6 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// 1. Định nghĩa Type rõ ràng cho item phân trang
 export type PaginationItem = number | "...";
 
 interface PaginationProps {
@@ -11,7 +10,6 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-// 2. Helper độc lập ngoài component - Chuẩn SRP, tránh re-create function mỗi lần render
 function buildPageNumbers(currentPage: number, totalPages: number): PaginationItem[] {
   const pages: PaginationItem[] = [];
   const maxVisiblePages = 5;
@@ -21,14 +19,12 @@ function buildPageNumbers(currentPage: number, totalPages: number): PaginationIt
       pages.push(i);
     }
   } else {
-    // Luôn hiện trang đầu
     pages.push(1);
 
     if (currentPage > 3) {
       pages.push("...");
     }
 
-    // Các trang xung quanh currentPage
     const start = Math.max(2, currentPage - 1);
     const end = Math.min(totalPages - 1, currentPage + 1);
 
@@ -40,7 +36,6 @@ function buildPageNumbers(currentPage: number, totalPages: number): PaginationIt
       pages.push("...");
     }
 
-    // Luôn hiện trang cuối
     pages.push(totalPages);
   }
 
@@ -54,7 +49,6 @@ export function Pagination({
   itemsPerPage,
   onPageChange,
 }: PaginationProps) {
-  // Guard clause: Không hiển thị nếu không có dữ liệu hoặc chỉ có 1 trang
   if (totalItems === 0 || totalPages <= 1) {
     return null;
   }
@@ -64,35 +58,34 @@ export function Pagination({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2 border-t border-slate-200 dark:border-slate-800">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-5 px-2 border-t border-border-main">
       {/* Thông tin số lượng hiển thị */}
-      <div className="text-xs text-slate-500 dark:text-slate-400">
-        Hiển thị <span className="font-semibold text-slate-900 dark:text-slate-200">{startItem}</span> -{" "}
-        <span className="font-semibold text-slate-900 dark:text-slate-200">{endItem}</span> trên tổng số{" "}
-        <span className="font-semibold text-slate-900 dark:text-slate-200">{totalItems}</span> sản phẩm
+      <div className="text-xs text-text-secondary">
+        Hiển thị <span className="font-semibold text-text-primary">{startItem}</span> -{" "}
+        <span className="font-semibold text-text-primary">{endItem}</span> trên tổng số{" "}
+        <span className="font-semibold text-text-primary">{totalItems}</span> sản phẩm
       </div>
 
       {/* Cụm điều hướng trang */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         {/* Nút Trang Trước */}
         <button
           type="button"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           aria-label="Trang trước"
-          className="flex items-center justify-center h-9 w-9 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-blue-600 disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-slate-600 transition-colors dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800"
+          className="flex items-center justify-center h-9 w-9 rounded-lg border border-border-main bg-bg-surface text-text-primary hover:border-text-secondary/40 disabled:opacity-40 disabled:hover:bg-bg-surface disabled:hover:border-border-main transition-all active:scale-[0.97] cursor-pointer"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-4.5 w-4.5" />
         </button>
 
         {/* Danh sách các nút số trang */}
         {pageItems.map((page, index) => {
-          // 3. Type Narrowing tự động của TypeScript, không cần 'as number'
           if (page === "...") {
             return (
               <span
                 key={`ellipsis-${index}`}
-                className="flex items-center justify-center h-9 w-9 text-xs text-slate-400 select-none"
+                className="flex items-center justify-center h-9 w-9 text-xs text-text-secondary/60 select-none font-mono"
               >
                 ...
               </span>
@@ -106,12 +99,11 @@ export function Pagination({
               key={page}
               type="button"
               onClick={() => onPageChange(page)}
-              // 4. Accessibility chuẩn ARIA cho trang đang active
               aria-current={isActive ? "page" : undefined}
-              className={`flex items-center justify-center h-9 min-w-9 px-3 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center justify-center h-9 min-w-9 px-3 rounded-lg text-xs font-semibold transition-all active:scale-[0.97] cursor-pointer ${
                 isActive
-                  ? "bg-slate-900 text-white shadow-sm dark:bg-blue-600"
-                  : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                  ? "bg-brand text-white border border-brand shadow-sm"
+                  : "border border-border-main bg-bg-surface text-text-primary hover:border-text-secondary/40"
               }`}
             >
               {page}
@@ -125,9 +117,9 @@ export function Pagination({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           aria-label="Trang sau"
-          className="flex items-center justify-center h-9 w-9 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-blue-600 disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-slate-600 transition-colors dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800"
+          className="flex items-center justify-center h-9 w-9 rounded-lg border border-border-main bg-bg-surface text-text-primary hover:border-text-secondary/40 disabled:opacity-40 disabled:hover:bg-bg-surface disabled:hover:border-border-main transition-all active:scale-[0.97] cursor-pointer"
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-4.5 w-4.5" />
         </button>
       </div>
     </div>

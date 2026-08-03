@@ -59,8 +59,10 @@ export function ProductDetailPage() {
     return () => window.clearTimeout(timeoutId);
   }, [fetchDetail]);
 
+  const isOutOfStock = product?.status === "Out of Stock";
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-bg-main text-text-primary flex flex-col font-sans animate-fade-in-up">
       <Header />
 
       <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex-1">
@@ -68,17 +70,17 @@ export function ProductDetailPage() {
         <button
           type="button"
           onClick={() => navigate("/")}
-          className="inline-flex items-center gap-2 mb-6 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50 hover:text-blue-600 transition-all dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
+          className="inline-flex items-center gap-2 mb-6 rounded-xl border border-border-main bg-bg-surface px-4 py-2.5 text-xs font-bold text-text-primary hover:border-text-secondary/40 active:scale-[0.97] transition-all cursor-pointer min-h-[40px]"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4 text-brand" />
           <span>Quay lại danh sách</span>
         </button>
 
         {/* Loading State */}
         {isLoading && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="h-10 w-10 animate-spin text-blue-600 mb-4" />
-            <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+          <div className="flex flex-col items-center justify-center py-24">
+            <Loader2 className="h-10 w-10 animate-spin text-brand mb-4" />
+            <p className="text-sm font-semibold text-text-secondary">
               Đang tải chi tiết sản phẩm...
             </p>
           </div>
@@ -88,19 +90,19 @@ export function ProductDetailPage() {
         {!isLoading && error && (
           <div
             role="alert"
-            className="flex flex-col items-center justify-center py-16 rounded-3xl bg-white border border-rose-100 p-8 text-center shadow-sm dark:bg-slate-900 dark:border-slate-800"
+            className="flex flex-col items-center justify-center py-16 rounded-xl bg-bg-surface border border-danger/20 p-8 text-center shadow-sm"
           >
-            <AlertCircle className="h-12 w-12 text-rose-500 mb-3" />
-            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
+            <AlertCircle className="h-12 w-12 text-danger mb-3" />
+            <h3 className="text-base font-bold font-display text-text-primary mb-1">
               {error}
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+            <p className="text-xs text-text-secondary mb-4">
               Vui lòng kiểm tra lại đường dẫn hoặc chọn sản phẩm khác.
             </p>
             <button
               type="button"
               onClick={() => navigate("/")}
-              className="rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-500 transition-all"
+              className="rounded-lg bg-brand px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-brand/90 active:scale-[0.97] transition-all cursor-pointer"
             >
               Về trang chủ
             </button>
@@ -110,29 +112,36 @@ export function ProductDetailPage() {
         {/* Product Detail View */}
         {!isLoading && !error && product && (
           <div className="space-y-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 rounded-3xl bg-white p-6 sm:p-8 border border-slate-100 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 rounded-xl bg-bg-surface p-6 sm:p-8 border border-border-main shadow-sm">
               {/* Gallery Ảnh */}
               <div className="space-y-4">
-                <div className="aspect-square w-full overflow-hidden rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
+                <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-bg-main border border-border-main/50 flex items-center justify-center">
                   <img
                     src={selectedImage}
                     alt={product.name}
-                    className="h-full w-full object-cover object-center"
+                    className={`h-full w-full object-cover object-center ${isOutOfStock ? "grayscale opacity-50" : ""}`}
                   />
+                  {isOutOfStock && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-10 backdrop-blur-xs">
+                      <span className="px-4 py-1.5 border border-danger/40 bg-black/75 rounded text-xs font-mono font-bold text-danger uppercase tracking-widest shadow-md">
+                        SOLD OUT // HẾT HÀNG
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Thumbnail list */}
-                {product.images && product.images.length > 0 && (
+                {product.images && product.images.length > 1 && (
                   <div className="flex items-center gap-3 overflow-x-auto pb-2 custom-scrollbar">
                     {product.images.map((img, idx) => (
                       <button
                         key={idx}
                         type="button"
                         onClick={() => setSelectedImage(img)}
-                        className={`relative aspect-square h-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all ${
+                        className={`relative aspect-square h-20 shrink-0 overflow-hidden rounded-lg border-2 transition-all active:scale-[0.95] cursor-pointer ${
                           selectedImage === img
-                            ? "border-blue-600 ring-2 ring-blue-100"
-                            : "border-slate-200 hover:border-slate-300 dark:border-slate-800"
+                            ? "border-brand ring-2 ring-brand/10"
+                            : "border-border-main hover:border-text-secondary/40"
                         }`}
                       >
                         <img
@@ -147,70 +156,73 @@ export function ProductDetailPage() {
               </div>
 
               {/* Thông tin chính */}
-              <div className="flex flex-col justify-between">
+              <div className="flex flex-col justify-between space-y-6">
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-accent">
                       {product.brand}
                     </span>
-                    <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                      {product.category}
+                    
+                    {/* Monospace Spec Badge style for Category */}
+                    <span className="rounded font-mono text-[10px] font-bold px-2 py-0.5 border border-border-main bg-bg-main text-text-primary uppercase tracking-wider">
+                      [CAT: {product.category}]
                     </span>
                   </div>
 
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mb-3">
+                  <h1 className="text-3xl font-bold font-display text-text-primary tracking-tight mb-3">
                     {product.name}
                   </h1>
 
-                  {/* Rating */}
-                  <div className="flex items-center gap-2 mb-6">
-                    <div className="flex items-center gap-1 text-amber-500">
+                  {/* Rating & ID Spec Plate Tag */}
+                  <div className="flex flex-wrap items-center gap-3 mb-5">
+                    <div className="flex items-center gap-1.5 text-warning font-mono text-xs font-bold">
                       <Star className="h-4 w-4 fill-current" />
-                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                        {product.rating}
-                      </span>
+                      <span>{product.rating}</span>
                     </div>
-                    <span className="text-xs text-slate-400">
-                      ({product.reviewCount} đánh giá từ khách hàng)
+                    <span className="text-xs text-text-secondary">
+                      ({product.reviewCount} reviews)
+                    </span>
+                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded border border-border-main bg-bg-main text-text-secondary uppercase">
+                      ID: {product.id}
                     </span>
                   </div>
 
-                  {/* Khối Giá */}
-                  <div className="rounded-2xl bg-slate-50 p-4 mb-6 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-3xl font-black text-blue-600 dark:text-blue-400">
+                  {/* Khối Giá Nổi Bật */}
+                  <div className="rounded-xl bg-bg-main p-5 mb-5 border border-border-main">
+                    <div className="flex flex-wrap items-baseline gap-3">
+                      <span className="text-3xl font-bold font-display text-brand leading-none">
                         {formatCurrency(product.price)}
                       </span>
                       {product.discountPercent > 0 && (
-                        <span className="text-sm text-slate-400 line-through">
+                        <span className="text-sm text-text-secondary line-through font-mono leading-none">
                           {formatCurrency(product.originalPrice)}
                         </span>
                       )}
                       {product.discountPercent > 0 && (
-                        <span className="rounded-lg bg-rose-100 px-2 py-0.5 text-xs font-bold text-rose-600">
-                          Tiết kiệm {product.discountPercent}%
+                        <span className="rounded bg-danger/10 px-2 py-0.5 text-[10px] font-mono font-bold text-danger uppercase tracking-wider border border-danger/10">
+                          SAVE {product.discountPercent}%
                         </span>
                       )}
                     </div>
                   </div>
 
                   {/* Highlight Trạng Thái & Bảo Hành */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="flex items-center gap-3 rounded-xl border border-slate-100 p-3 dark:border-slate-800">
-                      <PackageCheck className="h-5 w-5 text-emerald-600" />
+                  <div className="grid grid-cols-2 gap-4 mb-5">
+                    <div className="flex items-center gap-3 rounded-xl border border-border-main p-3 bg-bg-surface">
+                      <PackageCheck className={`h-5 w-5 ${isOutOfStock ? "text-danger" : "text-success"}`} />
                       <div>
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Tình trạng</div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                          {product.status === "Available" ? `Còn hàng (${product.stockQuantity})` : product.status}
+                        <div className="text-[9px] uppercase font-mono font-bold text-text-secondary tracking-wider">Tình trạng</div>
+                        <div className="text-xs font-bold text-text-primary">
+                          {product.status === "Available" ? `Còn hàng (${product.stockQuantity})` : isOutOfStock ? "Hết hàng" : "Sắp về"}
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 rounded-xl border border-slate-100 p-3 dark:border-slate-800">
-                      <ShieldCheck className="h-5 w-5 text-blue-600" />
+                    <div className="flex items-center gap-3 rounded-xl border border-border-main p-3 bg-bg-surface">
+                      <ShieldCheck className="h-5 w-5 text-accent" />
                       <div>
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Bảo hành</div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        <div className="text-[9px] uppercase font-mono font-bold text-text-secondary tracking-wider">Bảo hành</div>
+                        <div className="text-xs font-bold text-text-primary">
                           {product.warranty || "12 tháng"}
                         </div>
                       </div>
@@ -218,12 +230,12 @@ export function ProductDetailPage() {
                   </div>
 
                   {/* Tags */}
-                  <div className="flex flex-wrap items-center gap-2 mb-6">
-                    <Tag className="h-3.5 w-3.5 text-slate-400" />
+                  <div className="flex flex-wrap items-center gap-2 mb-5">
+                    <Tag className="h-3.5 w-3.5 text-text-secondary/60" />
                     {product.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                        className="rounded font-mono text-[9px] font-bold px-2 py-0.5 border border-border-main bg-bg-main text-text-secondary uppercase tracking-wider"
                       >
                         #{tag}
                       </span>
@@ -231,7 +243,7 @@ export function ProductDetailPage() {
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-text-secondary leading-relaxed border-t border-border-main pt-4">
                   {product.description}
                 </p>
               </div>
@@ -240,33 +252,34 @@ export function ProductDetailPage() {
             {/* Khối Mô Tả Chi Tiết & Thông Số Kỹ Thuật */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Bài viết chi tiết */}
-              <div className="lg:col-span-2 rounded-3xl bg-white p-6 sm:p-8 border border-slate-100 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
+              <div className="lg:col-span-2 rounded-xl bg-bg-surface p-6 sm:p-8 border border-border-main shadow-sm">
+                <h2 className="text-xl font-bold font-display text-text-primary mb-4 border-b border-border-main pb-2">
                   Mô Tả Chi Tiết Sản Phẩm
                 </h2>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-line">
                   {product.fullDescription}
                 </p>
               </div>
 
-              {/* Thông số kỹ thuật */}
-              <div className="rounded-3xl bg-white p-6 sm:p-8 border border-slate-100 shadow-sm dark:bg-slate-900 dark:border-slate-800 h-fit">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
+              {/* Thông số kỹ thuật (Spec Plate layout) */}
+              <div className="border border-border-main rounded-md p-6 bg-bg-surface shadow-sm h-fit">
+                <h2 className="text-lg font-bold font-display text-text-primary mb-5 border-b border-border-main pb-2">
                   Thông Số Kỹ Thuật
                 </h2>
+                
                 {product.specifications ? (
-                  <dl className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+                  <dl className="divide-y divide-border-main font-mono text-[10px]">
                     {Object.entries(product.specifications).map(([key, val]) => (
-                      <div key={key} className="py-2.5 flex justify-between gap-4">
-                        <dt className="font-semibold text-slate-500">{key}</dt>
-                        <dd className="font-bold text-slate-800 dark:text-slate-200 text-right">
+                      <div key={key} className="py-3 flex justify-between gap-4">
+                        <dt className="font-bold text-text-secondary uppercase tracking-wider">{key}</dt>
+                        <dd className="font-semibold font-sans text-xs text-text-primary text-right">
                           {val}
                         </dd>
                       </div>
                     ))}
                   </dl>
                 ) : (
-                  <p className="text-xs text-slate-400">Không có thông số cụ thể.</p>
+                  <p className="text-xs text-text-secondary/60 font-mono">[NO_DATA_AVAILABLE]</p>
                 )}
               </div>
             </div>
