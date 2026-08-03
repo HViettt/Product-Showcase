@@ -323,11 +323,11 @@ function generateDataset() {
     const color = getRandomItem(COLOR_PALETTE);
     const tags = getRandomSubarray(TAGS_POOL, getRandomInt(2, 4));
 
-    const primaryImage = `https://placehold.co/800x800?text=${encodeURIComponent(template.model)}+Front`;
+    const primaryImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(template.model)}&size=800&background=random&bold=true&format=png`;
     const galleryImages = [
       primaryImage,
-      `https://placehold.co/800x800?text=${encodeURIComponent(template.model)}+Side`,
-      `https://placehold.co/800x800?text=${encodeURIComponent(template.model)}+Back`
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(template.model + ' Side')}&size=800&background=random&bold=true&format=png`,
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(template.model + ' Back')}&size=800&background=random&bold=true&format=png`
     ];
 
     const description = `${template.model} chính hãng thương hiệu ${template.brand}. Thiết kế hiện đại, hiệu năng mạnh mẽ hàng đầu phân khúc năm ${template.year}.`;
@@ -382,7 +382,7 @@ function generateAuxiliaryData() {
       username: 'geekup_tester',
       name: 'GEEK UP Candidate',
       email: 'candidate@geekup.vn',
-      avatar: 'https://placehold.co/150x150?text=User+Avatar',
+      avatar: 'https://ui-avatars.com/api/?name=User&size=150&background=random',
       role: 'Tester'
     },
     {
@@ -390,7 +390,7 @@ function generateAuxiliaryData() {
       username: 'admin',
       name: 'System Administrator',
       email: 'admin@geekup.vn',
-      avatar: 'https://placehold.co/150x150?text=Admin',
+      avatar: 'https://ui-avatars.com/api/?name=Admin&size=150&background=random',
       role: 'Admin'
     }
   ];
