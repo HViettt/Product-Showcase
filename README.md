@@ -2,16 +2,25 @@
 
 ## Setup
 
-1. Vào thư mục project:
+1. Di chuyển vào thư mục project:
    ```powershell
-   cd "C:\Users\Gigabyte\OneDrive - ut.edu.vn\Desktop\Technical Test\product-showcase"
+   cd <path-to-project>
+   ```
+   ```bash
+   cd <path-to-project>
    ```
 2. Cài đặt dependencies:
    ```powershell
    npm install
    ```
+   ```bash
+   npm install
+   ```
 3. Khởi động mock API bằng Mockoon CLI:
    ```powershell
+   docker compose up mock-api -d
+   ```
+   ```bash
    docker compose up mock-api -d
    ```
 
@@ -21,9 +30,15 @@
 ```powershell
 npm run dev -- --host 0.0.0.0
 ```
+```bash
+npm run dev -- --host 0.0.0.0
+```
 
 ### Build production
 ```powershell
+npm run build
+```
+```bash
 npm run build
 ```
 
@@ -31,10 +46,17 @@ npm run build
 ```powershell
 npm run lint
 ```
+```bash
+npm run lint
+```
 
 ## Docker
 
 ```powershell
+docker build -t product-showcase .
+docker compose up --build
+```
+```bash
 docker build -t product-showcase .
 docker compose up --build
 ```
@@ -46,3 +68,4 @@ docker compose up --build
 ### API base URL
 Frontend default calls:
 - `http://localhost:3001/api`
+- khi chạy trong container Docker, frontend nên gọi qua proxy path `/api`
