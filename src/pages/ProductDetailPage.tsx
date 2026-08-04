@@ -248,45 +248,38 @@ export function ProductDetailPage() {
                   </div>
                 </div>
 
-                <p className="text-xs text-text-secondary leading-relaxed border-t border-border-main pt-4">
-                  {product.description}
-                </p>
+                {/* Mô tả chi tiết */}
+                {product.fullDescription && (
+                  <div className="border-t border-border-main pt-4 space-y-2">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-text-primary">
+                      Mô Tả Chi Tiết
+                    </h3>
+                    <p className="text-xs sm:text-sm text-text-secondary leading-relaxed whitespace-pre-line">
+                      {product.fullDescription}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Khối Mô Tả Chi Tiết & Thông Số Kỹ Thuật */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Bài viết chi tiết */}
-              <div className="lg:col-span-2 rounded-xl bg-bg-surface p-6 sm:p-8 border border-border-main shadow-sm">
-                <h2 className="text-xl font-bold font-display text-text-primary mb-4 border-b border-border-main pb-2">
-                  Mô Tả Chi Tiết Sản Phẩm
-                </h2>
-                <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-line">
-                  {product.fullDescription}
-                </p>
-              </div>
-
-              {/* Thông số kỹ thuật (Spec Plate layout) */}
-              <div className="border border-border-main rounded-md p-6 bg-bg-surface shadow-sm h-fit">
-                <h2 className="text-lg font-bold font-display text-text-primary mb-5 border-b border-border-main pb-2">
-                  Thông Số Kỹ Thuật
-                </h2>
-                
-                {product.specifications ? (
-                  <dl className="divide-y divide-border-main font-mono text-[10px]">
-                    {Object.entries(product.specifications).map(([key, val]) => (
-                      <div key={key} className="py-3 flex justify-between gap-4">
-                        <dt className="font-bold text-text-secondary uppercase tracking-wider">{key}</dt>
-                        <dd className="font-semibold font-sans text-xs text-text-primary text-right">
-                          {val}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                ) : (
-                  <p className="text-xs text-text-secondary/60 font-mono">[NO_DATA_AVAILABLE]</p>
-                )}
-              </div>
+            {/* Khối Thông Số Kỹ Thuật */}
+            <div className="rounded-xl border border-border-main bg-bg-surface p-6 sm:p-8 shadow-sm">
+              <h2 className="text-lg font-bold font-display text-text-primary mb-5 border-b border-border-main pb-2">
+                Thông Số Kỹ Thuật Chi Tiết
+              </h2>
+              
+              {product.specifications ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 font-mono text-xs">
+                  {Object.entries(product.specifications).map(([key, val]) => (
+                    <div key={key} className="py-2.5 flex justify-between gap-4 border-b border-border-main/50">
+                      <span className="font-bold text-text-secondary uppercase tracking-wider shrink-0">{key}</span>
+                      <span className="font-semibold font-sans text-text-primary text-right">{val}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-text-secondary/60 font-mono">[NO_DATA_AVAILABLE]</p>
+              )}
             </div>
           </div>
         )}

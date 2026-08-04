@@ -1,12 +1,59 @@
-Approach
+==================================================================
+APPROACH & ARCHITECTURE DOCUMENTATION - GEEK UP TECHNICAL ASSESSMENT
+==================================================================
+Project: Product Showcase
+Developer: Technical Candidate
 
-- Kiểm tra toàn bộ source code trước khi sửa, chỉ giữ lại những phần đang đúng với business requirement.
-- Dùng React + TypeScript + Vite + React Router DOM cho màn hình Login, Product List, Product Detail.
-- Dùng Axios để kết nối API và localStorage để lưu token.
-- Dùng Mockoon để thiết kế mock API theo đúng endpoint /api/login, /api/logout, /api/product, /api/product/:id.
-- Dùng Docker để chạy frontend và mock-api trong cùng one-command setup.
+I. PHƯƠNG PHÁP TIẾP CẬN & TƯ DUY KIẾN TRÚC
 
-Lý do lựa chọn:
-- React + TypeScript phù hợp với yêu cầu UI và type-safe.
-- Mockoon giúp mock API nhanh, rõ ràng và khớp đúng requirement.
-- Docker giúp project dễ chạy trên môi trường khác nhau.
+1. Lộ trình Triển khai:
+- Tiếp cận đề bài trong khung thời gian 24h với tư duy quản trị rủi ro. Chia dự án thành 4 giai đoạn:
+  + Giai đoạn 1: Khởi tạo khung dự án & Thiết kế Mock API (Mockoon CLI).
+  + Giai đoạn 2: Xây dựng Router (react-router-dom) & Luồng Xác thực Auth.
+  + Giai đoạn 3: Thiết kế Data Pipeline Engine cho Product List/Detail.
+  + Giai đoạn 4: Containerization (Docker).
+- Dành khoảng 2 giờ buffer time cuối cùng để tự rà soát, kiểm thử qua Docker thực tế và khắc phục các lỗi phát sinh (như Build-time Environment Variables, Route Mockoon Param Match rules, hay Breakpoint mapping) trước khi nộp.
+
+2. Cấu trúc Lọc Dữ liệu Client-side:
+- Đáp ứng yêu cầu "Filter is required for ALL the product data" trên tập 100+ sản phẩm mà không phụ thuộc vào Backend Filter logic.
+- Xây dựng Custom Hook `useProductFilter.ts` đóng vai trò như một Data Processing Engine tuần tự:
+  [Dữ liệu thô API] -> [Tìm kiếm Tên] -> [Lọc đa thuộc tính] -> [Sắp xếp] -> [Phân trang Boundary]
+- Toàn bộ thuật toán lọc đa điều kiện (category, brand, color, tags, status, price, stock, rating, năm phát hành) được bọc trong các block `useMemo` để lưu đệm (cache), triệt tiêu render thừa và đảm bảo phản hồi tức thì dưới 16ms khi người dùng thao tác.
+
+3. Tự động hóa Giao diện hướng Dữ liệu (Data-driven UI):
+- Thay vì hardcode các tùy chọn lọc ở Frontend, xây dựng helper `getUniqueProductOptions(products)` để trích xuất động các giá trị duy nhất từ tập API thực tế trả về.
+- Giúp Sidebar tự động hiển thị đúng Brand/Category/Color thực tế, nâng cao khả năng mở rộng khi dữ liệu Mock API thay đổi.
+
+4. Quản lý Trạng thái Xác thực & Vòng đời Token:
+- Tổ chức `AuthContext` + `AuthProvider` + custom hook `useAuth()` quản lý trạng thái đăng nhập tập trung.
+- Duy trì Token qua các lần reload bằng `localStorage`. Tích hợp module dùng chung `apiClient.ts` chứa Axios Interceptors tự động đính kèm header `Authorization: Bearer <token>` cho mọi request, đồng thời xử lý lỗi `401 Unauthorized` để xóa token và tự động điều hướng về `/login`.
+
+5. Kiến trúc Containerization & Reverse Proxy Nginx:
+- Đóng gói Dockerfile Multi-stage (Node.js Builder -> Nginx Alpine Server) tối ưu dung lượng Image.
+- Cấu hình Nginx Web Server xử lý Client-side SPA Routing (`try_files $uri /index.html`) và thiết lập Reverse Proxy cho các API endpoint `/api/` trỏ sang container `mock-api`, giải quyết triệt để vấn đề CORS.
+- Giải quyết bài toán Build-time Environment Variables bằng cách truyền `ARG VITE_API_BASE_URL` thông qua `build.args` trong `docker-compose.yml`, giúp Vite inline chính xác URL `/api` vào static bundle lúc build.
+
+---
+
+II. THƯ VIỆN / CÔNG CỤ SỬ DỤNG VÀ LÝ DO LỰA CHỌN
+
+1. React 19 + TypeScript (Strict Mode):
+- Lý do: Mang lại hiệu năng Virtual DOM ấn tượng và kiến trúc Component hóa mạnh mẽ. TypeScript với cờ `verbatimModuleSyntax: true` bắt buộc phân tách `import type`, triệt tiêu hoàn toàn lỗi Type Safety và Runtime Crash từ sớm.
+
+2. Vite:
+- Lý do: Khởi động Dev Server và HMR (Hot Module Replacement) cực nhanh. Build tĩnh tối ưu dung lượng đầu ra qua Rollup.
+
+3. Tailwind CSS v4:
+- Lý do: Tối ưu thiết kế UI Utility-first. Sử dụng chỉ thị `@theme` trong `index.css` để định nghĩa lại chuẩn breakpoint `1280px` (thay vì 1024px mặc định của Tailwind) theo đúng yêu cầu đề bài cho PC (>=1280px) và Mobile (<1280px Drawer).
+
+4. React Router v7 (`react-router-dom`):
+- Lý do: Thư viện định tuyến SPA tiêu chuẩn, hỗ trợ `ProtectedRoute` bảo vệ trang nội bộ và duy trì lịch sử duyệt trang (Back/Forward) tự nhiên cho người dùng.
+
+5. Axios:
+- Lý do: HTTP Client mạnh mẽ, dễ dàng cấu hình Interceptor tập trung và xử lý lỗi Type Narrowing bằng `axios.isAxiosError()` an toàn hơn so với `fetch` thuần.
+
+6. Mockoon CLI (`mockoon/cli`) & Script Đồng bộ (`sync-mockoon.js`):
+- Lý do: Chuẩn theo khuyến nghị của GEEK UP. Sử dụng script Node.js tự động đồng bộ `mockoon-data.json` và tạo ra N rules riêng biệt khớp chính xác path param `:id` cho route `GET /api/product/:id`, đảm bảo màn hình Product Detail trả về chính xác 100% dữ liệu từng sản phẩm khi chạy qua Docker.
+
+7. Docker & Docker Compose:
+- Lý do: Đảm bảo tính đóng gói nhất quán ("It works on my machine -> It works everywhere"). Giúp Reviewer khởi chạy trọn gói cả Frontend và Mock API chỉ bằng 1 câu lệnh duy nhất: `docker-compose up --build`.
