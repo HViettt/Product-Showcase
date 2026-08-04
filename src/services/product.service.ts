@@ -3,12 +3,12 @@ import type { Product, ProductDetail, ProductDetailResponse, ProductListResponse
 
 export const productService = {
   async getProducts(): Promise<Product[]> {
-    const response = await api.get<ProductListResponse>("/product");
+    const response = await api.get<ProductListResponse>("product");
     return response.data.data;
   },
 
   async getProductById(id: string): Promise<ProductDetail> {
-    const response = await api.get<ProductDetailResponse>(`/product/${id}`);
+    const response = await api.get<ProductDetailResponse>(`product/${id}`);
     return response.data.data;
   },
 };

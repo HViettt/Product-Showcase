@@ -2,8 +2,13 @@ import axios from "axios";
 
 export const AUTH_STORAGE_KEY = "product-showcase-auth";
 
+let baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001/api";
+if (!baseUrl.endsWith("/")) {
+  baseUrl += "/";
+}
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3001/api",
+  baseURL: baseUrl,
   timeout: 10000,
 });
 
